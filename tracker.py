@@ -79,7 +79,7 @@ class Tracker(object):
             # 尝试与对等方进行连接，如果连接失败就跳过
             if not new_peer.connect():
                 continue
-
+            # BUG: 此行代码应该往下移到记录对等方后面，不然还没有更新
             print('Connected to %d/%d peers' % (len(self.connected_peers), MAX_PEERS_CONNECTED))
             # 记录成功连接的对等方，用对等方的IP地址:端口号作为关键字
             self.connected_peers[new_peer.__hash__()] = new_peer
@@ -123,6 +123,7 @@ class Tracker(object):
                     # 光标后移4个字节，开始提取端口号
                     offset += 4
                     # "!H" 表示大端格式的短整型
+                    # BUG: 此处port需要用int转换
                     port = struct.unpack_from("!H",list_peers['peers'], offset)[0]
                     # 提取完端口号后，后移2个字节，准备提取下一个对等方信息
                     offset += 2
@@ -133,6 +134,7 @@ class Tracker(object):
             # 如果list_peers['peers']为列表，则信息没有被压缩，直接迭代提取信息
             else:
                 for p in list_peers['peers']:
+                    # BUG: 此处port需要用int转换
                     s = SockAddr(p['ip'], p['port'])
                     self.dict_sock_addr[s.__hash__()] = s
 
@@ -142,7 +144,7 @@ class Tracker(object):
     def udp_scrapper(self, announce):
         torrent = self.torrent
         # 从tracker链接里取出主机名和端口号的信息
-        # 根据python版本的不同，较老的版本无法使用urllib.parse.urlparse解析
+        # BUG: 根据python版本的不同，较老的版本无法使用urllib.parse.urlparse解析
         # 而且会影响requests.utils.urlparse解析
         # 可以使用如下方式解析
         # parsed = urlparse(announce)
