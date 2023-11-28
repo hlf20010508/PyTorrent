@@ -91,5 +91,10 @@ class Torrent(object):
             return [[self.torrent_file['announce']]]
 
     def generate_peer_id(self):
+        # BUG: 这里应当使用标准20字节格式的peer id，并且伪装成主流客户端，不然可能没有对等方会理你
+        # 这里以qBittorrent的格式为例
+        # import random
+        # import string
+        # return '-qBXYZ0-' + ''.join(random.sample(string.ascii_letters + string.digits, 12))
         seed = str(time.time())
         return hashlib.sha1(seed.encode('utf-8')).digest()
