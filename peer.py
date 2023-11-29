@@ -148,6 +148,7 @@ class Peer(object):
         logging.debug('handle_request - %s' % self.ip)
         # 如果对等方对我们有兴趣，且没有阻塞我们，就将其想要的片段发送过去
         if self.is_interested() and self.is_unchoked():
+            # BUG: 此处应该为PeersManager.PeerRequestsPiece
             pub.sendMessage('PiecesManager.PeerRequestsPiece', request=request, peer=self)
     # 处理对等方发送过来的片段信息
     def handle_piece(self, message):
