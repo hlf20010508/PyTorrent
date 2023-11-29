@@ -35,6 +35,7 @@ class PeersManager(Thread):
         pub.subscribe(self.peer_requests_piece, 'PeersManager.PeerRequestsPiece')
         # 处理对等方bitfield更新事件，尚未实装，且从注释来看此事件会被移入RarestPieces类
         pub.subscribe(self.peers_bitfield, 'PeersManager.updatePeersBitfield')
+
     # 处理对等方请求片段的事件
     def peer_requests_piece(self, request=None, peer=None):
         if not request or not peer:
@@ -48,6 +49,7 @@ class PeersManager(Thread):
             piece = message.Piece(piece_index, block_offset, block_length, block).to_bytes()
             peer.send_to_peer(piece)
             logging.info("Sent piece index {} to peer : {}".format(request.piece_index, peer.ip))
+
     # 处理对等方bitfield更新事件
     def peers_bitfield(self, bitfield=None):
         # 遍历所有片段
@@ -57,6 +59,7 @@ class PeersManager(Thread):
             if bitfield[i] == 1 and peer not in self.pieces_by_peer[i][1] and self.pieces_by_peer[i][0]:
                 self.pieces_by_peer[i][1].append(peer)
                 self.pieces_by_peer[i][0] = len(self.pieces_by_peer[i][1])
+
     # 随机选择一个有指定数据片段且符合条件的对等方
     def get_random_peer_having_piece(self, index):
         # 候选列表
@@ -69,12 +72,14 @@ class PeersManager(Thread):
                 ready_peers.append(peer)
         # 随机选取一个对等方
         return random.choice(ready_peers) if ready_peers else None
+
     # 检查是否有未将本客户端阻塞的对等方
     def has_unchoked_peers(self):
         for peer in self.peers:
             if peer.is_unchoked():
                 return True
         return False
+
     # 计算未将本客户端阻塞的对等方的数量
     def unchoked_peers_count(self):
         cpt = 0
@@ -110,6 +115,7 @@ class PeersManager(Thread):
                 break
 
         return data
+
     # 启动线程
     def run(self):
         # 如果当前线程可运行就循环
@@ -141,6 +147,7 @@ class PeersManager(Thread):
                 for message in peer.get_messages():
                     # 按照消息类型处理每一条消息
                     self._process_new_message(message, peer)
+
     # 与对等方握手
     # BUG: 此方法应该被移动到tracker.Tracker._do_handshake，见tracker.Tracker.try_peer_connect
     def _do_handshake(self, peer):
@@ -154,6 +161,7 @@ class PeersManager(Thread):
             logging.exception("Error when sending Handshake message")
 
         return False
+
     # 遍历从tracker.Tracker爬取的所有对等方，并尝试握手，若握手成功则加入对等方列表
     # BUG: 此方法应该删去，见tracker.Tracker.try_peer_connect
     def add_peers(self, peers):
@@ -162,6 +170,7 @@ class PeersManager(Thread):
                 self.peers.append(peer)
             else:
                 print("Error _do_handshake")
+
     # 删除对等方
     def remove_peer(self, peer):
         if peer in self.peers:
@@ -175,6 +184,7 @@ class PeersManager(Thread):
         #for rarest_piece in self.rarest_pieces.rarest_pieces:
         #    if peer in rarest_piece["peers"]:
         #        rarest_piece["peers"].remove(peer)
+
     # 根据套接字从列表中获取对等方
     def get_peer_by_socket(self, socket):
         for peer in self.peers:
@@ -182,6 +192,7 @@ class PeersManager(Thread):
                 return peer
 
         raise Exception("Peer not present in peer_list")
+
     # 按照消息类型处理消息
     def _process_new_message(self, new_message: message.Message, peer: peer.Peer):
         # 如果是握手消息或保持连接消息就报错，因为这两个消息在前面已经处理过了，且只会出现一次

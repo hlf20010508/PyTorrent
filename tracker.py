@@ -35,6 +35,7 @@ class Tracker(object):
         self.threads_list = []
         self.connected_peers = {}
         self.dict_sock_addr = {}
+        
     # 从trackers服务器获取对等方
     def get_peers_from_trackers(self):
         # 遍历trackers服务器列表

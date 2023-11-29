@@ -55,6 +55,7 @@ class Message:
     # 在子类中实现序列化逻辑
     def to_bytes(self):
         raise NotImplementedError()
+
     # 在子类中实现反序列化逻辑
     @classmethod
     def from_bytes(cls, payload):
@@ -107,9 +108,11 @@ class UdpTrackerConnection(Message):
         self.action = pack('>I', 0)
         # 事务ID，每次都随机，保证唯一性
         self.trans_id = pack('>I', random.randint(0, 100000))
+
     # 将信息拼接成字节串
     def to_bytes(self):
         return self.conn_id + self.action + self.trans_id
+
     # 从字节串中提取信息
     def from_bytes(self, payload):
         self.action, = unpack('>I', payload[:4])
