@@ -113,7 +113,7 @@ class PeersManager(Thread):
 
                 for message in peer.get_messages():
                     self._process_new_message(message, peer)
-
+    # BUG: 此方法应该被移动到tracker.Tracker._do_handshake，见tracker.Tracker.try_peer_connect
     def _do_handshake(self, peer):
         try:
             handshake = message.Handshake(self.torrent.info_hash)
@@ -125,7 +125,8 @@ class PeersManager(Thread):
             logging.exception("Error when sending Handshake message")
 
         return False
-
+    
+    # BUG: 此方法应该删去，见tracker.Tracker.try_peer_connect
     def add_peers(self, peers):
         for peer in peers:
             if self._do_handshake(peer):

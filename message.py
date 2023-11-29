@@ -159,6 +159,8 @@ class UdpTrackerAnnounce(Message):
         conn_id = pack('>Q', self.conn_id)
         action = self.action
         trans_id = self.trans_id
+        # BUG: 需要将self.peer_id的字符串转换成字节串
+        # peer_id = pack('>20s', self.peer_id.encode())
         # 已下载的字节数，初始为0
         downloaded = pack('>Q', 0)
         # 还需要下载的字节数，初始为0
@@ -177,7 +179,7 @@ class UdpTrackerAnnounce(Message):
         # 本客户端的监听端口号
         # h表示2字节短整型
         port = pack('>h', 8000)
-
+        # BUG: 将self.peer_id改成上面转换的peer_id
         msg = (conn_id + action + trans_id + self.info_hash + self.peer_id + downloaded +
                left + uploaded + event + ip + key + num_want + port)
 

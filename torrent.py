@@ -92,6 +92,9 @@ class Torrent(object):
 
     def generate_peer_id(self):
         # BUG: 这里应当使用标准20字节格式的peer id，并且伪装成主流客户端，不然可能没有对等方会理你
+        # 并修改message.UdpTrackerAnnounce.to_bytes的peer_id，前往查看详情
+        # 而且这里生成的peer_id是字节串，而http参数接收的是字符串
+        # 虽然http参数也能接受字符串，不会报错，但是可能会造成对等方不理睬，原因未知
         # 这里以qBittorrent的格式为例
         # import random
         # import string

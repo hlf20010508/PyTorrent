@@ -77,6 +77,12 @@ class Tracker(object):
             # 创建对等方实例
             new_peer = peer.Peer(int(self.torrent.number_of_pieces), sock_addr.ip, sock_addr.port)
             # 尝试与对等方进行连接，如果连接失败就跳过
+            # BUG: 此处应该在连接成功后立即握手，否则会被对等方重置连接，导致握手失败
+            # 删除main.start中的self.peers_manager.add_peers(peers_dict.values())
+            # 删除peers_manager.PeersManager.add_peers方法
+            # 将peers_manager.PeersManager._do_handshake移到Tracker类中
+            # 然后将判断语句改为
+            # if not new_peer.connect() or not self.__do_handshake(new_peer):
             if not new_peer.connect():
                 continue
             # BUG: 此行代码应该往下移到记录对等方后面，不然还没有更新

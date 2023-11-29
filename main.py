@@ -38,6 +38,7 @@ class Run(object):
     def start(self):
         # 从trackers服务器获取对等方
         peers_dict = self.tracker.get_peers_from_trackers()
+        # BUG: 此处应该删去，见tracker.Tracker.try_peer_connect
         self.peers_manager.add_peers(peers_dict.values())
         # 持续循环直到所有片段下载完毕
         while not self.pieces_manager.all_pieces_completed():
