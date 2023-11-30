@@ -48,7 +48,40 @@ class Piece(object):
 
     # 根据偏移量和长度获取数据块内容
     def get_block(self, block_offset, block_length):
+        # BUG: 应当为
+        # return self.raw_data[block_offset:block_offset + block_length]
         return self.raw_data[block_offset:block_length]
+        # BUG: 由于片段下载完后应当清空数据，这样会导致无法得到数据，详见pieces_manager.PiecesManager.update_bitfield
+        # 因此必须要实现从本地文件读取数据
+        # file_data_list = []
+        # for file in self.files:
+        #     # 文件路径
+        #     path_file = file["path"]
+        #     # 该片段中的文件数据在该文件中的偏移量
+        #     file_offset = file["fileOffset"]
+        #     # 该文件在该片段中的偏移量
+        #     piece_offset = file["pieceOffset"]
+        #     # 要写入的数据长度
+        #     length = file["length"]
+
+        #     try:
+        #         # 打开文件
+        #         f = open(path_file, 'rb')
+        #     except Exception:
+        #         logging.exception("Can't read file %s" % path_file)
+        #         return
+        #     # 将文件光标指向文件偏移量
+        #     f.seek(file_offset)
+        #     # 读取数据
+        #     data = f.read(length)
+        #     file_data_list.append((piece_offset, data))
+        #     f.close()
+        # # 根据偏移量升序排序
+        # file_data_list.sort(key=lambda x: x[0])
+        # # 将数据拼接成片段
+        # piece = b''.join([data for _, data in file_data_list])
+        # # 返回指定的块
+        # return piece[block_offset : block_offset + block_length]
 
     # 获取一个未被占用的数据块信息
     def get_empty_block(self):
