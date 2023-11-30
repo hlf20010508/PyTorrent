@@ -85,6 +85,10 @@ class Run(object):
         new_progression = 0
 
         for i in range(self.pieces_manager.number_of_pieces):
+            # BUG: 下载完片段后应当清空数据，详见pieces_manager.PiecesManager.update_bitfield
+            # 由于清空数据后无法从块中得到块大小，所以只能读取片段大小
+            # if self.pieces_manager.pieces[i].is_full:
+            #     new_progression += self.pieces_manager.pieces[i].piece_size
             for j in range(self.pieces_manager.pieces[i].number_of_blocks):
                 # 加和每个片段中的每个下载完成的块的长度
                 if self.pieces_manager.pieces[i].blocks[j].state == State.FULL:
