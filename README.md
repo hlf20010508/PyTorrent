@@ -1,6 +1,13 @@
 
 # PyTorrent
 
+完成全部文件的中文注释，以供学习
+
+建议按照提交顺序阅读，因为有些信息只会解释一遍
+
+代码中有一些未完工未实装的功能，以及一些bug，已在注释中标出
+
+若不改正这些bug，代码可能无法运行
 
 PyTorrent is a CLI tool that downloads files from the **BitTorrent** network.
 
