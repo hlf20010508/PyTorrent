@@ -153,7 +153,9 @@ class Piece(object):
             length = file["length"]
 
             try:
-                # 尝试追加写入
+                # 尝试部分覆盖写入
+                # 有别于a+，r+在seek移动光标时，若光标超过当前文件长度，会在中间填充空比特，当光标在文件长度内，则会覆盖写入
+                # 这样即使片段写入的顺序不一样，也不会出现最终顺序乱的情况
                 f = open(path_file, 'r+b')  # Already existing file
             except IOError:
                 # 无法追加写入，说明文件还未被创建，则使用覆盖写入
