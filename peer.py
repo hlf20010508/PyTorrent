@@ -65,6 +65,8 @@ class Peer(object):
 
     # 判断对等方是否能够随机选择算法被选中以接收片段
     # 防止同一个对等方被连续要求发送片段
+    # 将时间差减少到0.1能加快下载速度，但可能导致关闭连接
+    # 若直接返回True，将导致对等方因短时间接收大量请求而关闭连接
     def is_eligible(self):
         now = time.time()
         return (now - self.last_call) > 0.2
