@@ -32,9 +32,10 @@ class PiecesManager(object):
     # 更新bitfield，将对应的片段置为1
     def update_bitfield(self, piece_index):
         self.bitfield[piece_index] = 1
-        # BUG: 应当清空片段中的数据，否则下载下来的文件仍然存在内存中，并更改main.Client.display_progression，前往查看详情
-        # self.pieces[piece_index].raw_data = b''
-        # self.pieces[piece_index].blocks = []
+        # BUG: 应当清空片段中的数据，否则下载下来的文件仍然存在内存中
+        # 需要实现clear方法，前往piece.py查看注释
+        # 还要更改main.Client.display_progression，前往查看详情
+        # self.pieces[piece_index].clear()
 
     # 存储收到的块数据
     def receive_block_piece(self, piece):

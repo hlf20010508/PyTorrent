@@ -139,6 +139,22 @@ class Piece(object):
         else:
             self.blocks.append(Block(block_size=int(self.piece_size)))
 
+    # BUG: 用于清空已下载的片段在内存中的数据
+    # def clear(self):
+    #     self.raw_data = b''
+    #     self.blocks = []
+
+    #     if self.number_of_blocks > 1:
+    #         for _ in range(self.number_of_blocks):
+    #             self.blocks.append(Block(state=State.FULL))
+
+    #         # Last block of last piece, the special block
+    #         if (self.piece_size % BLOCK_SIZE) > 0:
+    #             self.blocks[self.number_of_blocks - 1].block_size = self.piece_size % BLOCK_SIZE
+
+    #     else:
+    #         self.blocks.append(Block(state=State.FULL, block_size=int(self.piece_size)))
+
     # 将片段数据写入磁盘
     def _write_piece_on_disk(self):
         # 遍历片段中包含的文件
